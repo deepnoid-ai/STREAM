@@ -36,7 +36,7 @@ This repository contains:
 
 * A PyTorch implementation of the STREAM DiT and of the anisotropic pixel decoder.
 * Training scripts for Stage 1 (DiT), the spectral basis extraction and Stage 2 (anisotropic decoder).
-* Generation and single-GPU gFID / rFID evaluation with a PNG round trip.
+* Generation and gFID / rFID evaluation implementation.
 
 ## Environment
 
