@@ -1,0 +1,72 @@
+# STREAM hyper-parameters for TCGA-BRCA (256 x 256 patches at 20x, UNI ViT-L/16 tokens).
+# Data, checkpoint and output locations are not part of the config: every script takes
+# them as command-line arguments.
+#
+#   model        DiT architecture             stream.train_dit, stream.extract_svd, stream.evaluate
+#   transport    flow-matching objective      stream.train_dit
+#   dit_train    DiT optimization             stream.train_dit
+#   decoder      decoder architecture         stream.train_decoder, stream.evaluate
+#   decoder_train decoder optimization        stream.train_decoder
+#   sampling     generation                   stream.evaluate
+
+model:                        # StreamDiT (LightningDiT-XL/1 width and depth)
+  input_dim: 1024             # UNI token dimension
+  num_tokens: 256             # 16 x 16 tokens per 256 x 256 patch
+  hidden_size: 1152
+  depth: 28
+  num_heads: 16
+  mlp_ratio: 4.0
+
+transport:                    # stochastic Riemannian flow matching, chord loss
+  sigma_max: 0.01             # bridge noise sigma(t) = sigma_max * sin(pi t)
+  logit_normal_mu: -0.5       # t ~ sigmoid(N(mu, s^2))
+  logit_normal_s: 1.0
+  eps_t: 1.0e-05              # t clamped to [eps_t, 1 - eps_t]
+  min_one_minus_t: 0.001      # floor of (1 - t) in the 1 / (1 - t)^2 loss weight
+
+dit_train:
+  seed: 42
+  global_batch_size: 1024     # 128 per GPU on 8 GPUs
+  max_steps: 95000
+  lr: 0.0004                  # AdamW, linear warmup then constant
+  betas: [0.9, 0.95]
+  weight_decay: 0.0
+  warmup_steps: 5000
+  max_grad_norm: 5.0
+  ema_decay: 0.9999
+  num_workers: 8              # DataLoader workers per GPU
+  ckpt_every: 5000
+
+decoder:                      # RAE GeneralDecoder (ViT-XL); input width = model.input_dim
+  decoder_hidden_size: 1152
+  decoder_num_hidden_layers: 28
+  decoder_num_attention_heads: 16
+  decoder_intermediate_size: 4096
+  image_size: 256
+  patch_size: 16
+
+decoder_train:
+  seed: 42
+  global_batch_size: 512      # 64 per GPU on 8 GPUs
+  max_steps: 90000
+  num_workers: 8              # DataLoader workers per GPU
+  warmup_steps: 3000
+  lr: 0.0002                  # decoder AdamW, betas (0.9, 0.95), cosine decay to final_lr
+  final_lr: 2.0e-05
+  weight_decay: 0.05
+  disc_lr: 0.0002             # discriminator heads AdamW, betas (0.5, 0.9), cosine to disc_final_lr
+  disc_final_lr: 2.0e-05
+  ema_decay: 0.9978
+  lambda_l1: 1.0
+  lambda_lpips: 0.5
+  lambda_cos: 0.5             # UNI cosine round-trip loss
+  omega_G: 0.75               # adversarial weight (times the adaptive weight)
+  disc_upd_start_frac: 0.175  # Phase B (discriminator warm-up) starts at this fraction of max_steps
+  gan_start_frac: 0.2         # Phase C (adversarial loss on the decoder) starts here
+  sigma_H: 0.002              # noise std along the top-k* directions of the spectral basis
+  sigma_L: 0.02               # noise std along the remaining tangent directions
+  energy_threshold: 0.9       # k* = smallest k whose cumulative spectral energy reaches this
+  ckpt_every: 5000
+
+sampling:
+  num_steps: 25               # midpoint steps (50 DiT evaluations)

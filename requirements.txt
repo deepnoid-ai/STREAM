@@ -1,0 +1,20 @@
+# Same pins as environment.yml (Python 3.12). torch-fidelity provides the FID Inception weights
+# used by torchmetrics; huggingface_hub is used by timm to download UNI.
+# torch.compile also needs a C/C++ compiler (e.g. gcc) on the system.
+# PyTorch with CUDA 12.8:  pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cu128
+torch==2.8.0
+torchvision==0.23.0
+numpy==1.26.4
+scipy==1.15.3
+pillow==11.2.1
+pyyaml==6.0.2
+safetensors==0.7.0
+huggingface_hub==0.36.2
+timm==0.9.16
+transformers==4.56.2
+accelerate==0.23.0
+einops==0.8.2
+torchmetrics==1.8.2
+torch-fidelity==0.4.0
+scikit-learn==1.7.2
+wandb==0.25.0

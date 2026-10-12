@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# Checkpoints, caches and arrays
+*.pt
+*.pth
+*.bin
+*.ckpt
+*.safetensors
+*.npz
+*.npy
+
+# Outputs, logs, experiment tracking
+/outputs/
+/output/
+/results/
+/runs/
+wandb/
+*.log
+
+# Data
+/datasets/
+*.jpeg
+*.jpg
+*.png
+!assets/**/*.png
+!assets/**/*.jpg
+
+# Model / download caches
+.cache/
+.caches/
+/hf_cache/
+/torch_cache/
+
+# Environments / editors
+.env
+.venv/
+venv/
+.idea/
+.vscode/
+.DS_Store

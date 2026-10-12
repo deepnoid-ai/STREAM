@@ -1,0 +1,32 @@
+# Conda environment for STREAM.
+# The paper's runs used the NVIDIA PyTorch container nvcr.io/nvidia/pytorch:25.06-py3
+# (Python 3.12, PyTorch 2.8 pre-release, CUDA 12.9) with the package versions pinned below.
+# This file installs the matching public PyTorch 2.8 release (CUDA 12.8 wheels).
+#
+#   conda env create -f environment.yml
+#   conda activate stream
+name: stream
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - gxx=13                     # C/C++ compiler needed by torch.compile (Triton / Inductor)
+  - pip
+  - pip:
+      - --extra-index-url https://download.pytorch.org/whl/cu128
+      - torch==2.8.0
+      - torchvision==0.23.0
+      - numpy==1.26.4          # keep numpy < 2
+      - scipy==1.15.3
+      - pillow==11.2.1
+      - pyyaml==6.0.2
+      - safetensors==0.7.0
+      - huggingface_hub==0.36.2
+      - timm==0.9.16
+      - transformers==4.56.2
+      - accelerate==0.23.0
+      - einops==0.8.2
+      - torchmetrics==1.8.2
+      - torch-fidelity==0.4.0
+      - scikit-learn==1.7.2
+      - wandb==0.25.0
