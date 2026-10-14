@@ -339,7 +339,8 @@ This code builds on the following repositories:
 
 ## License
 
-The STREAM code is released under the MIT License (`LICENSE`). Vendored code and the pretrained
+The code and documentation are under CC BY-NC-SA 4.0 (see `LICENSE`): share and adapt for
+non-commercial use, with attribution, under the same license. Vendored code and the pretrained
 models downloaded at run time keep their own licenses and terms (UNI and Kaiko are
 non-commercial).
 
